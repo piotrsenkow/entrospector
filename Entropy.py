@@ -20,8 +20,11 @@ print(len(d))                              #prints the length of dictionary
 
 for x in counts:
     print("Gene {} connects to {} genes".format(x,counts[x]))
+print(counts.get('1369'))
 
 
+answer = input('Which gene would you like to know about?\n')
+print("{} has {} genes connect to it".format(answer,counts.get(answer)))
 
 
 
