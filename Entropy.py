@@ -1,3 +1,4 @@
+from numpy import float
 #http://code.activestate.com/recipes/52219-associating-multiple-values-with-each-key-in-a-dic/
 d = {}                                     #creates an empty dictionary
 counts = {}                                #empty dictionary thaat will hold the value counts of dictionary d
@@ -24,7 +25,20 @@ print(counts.get('1369'))
 
 
 answer = input('Which gene would you like to know about?\n')
+answer=str(answer)
 print("{} has {} genes connect to it".format(answer,counts.get(answer)))
+print("{} has the following genes connect to it: {}".format(answer,d.get(answer)))
 
 
+entropy = counts.get(answer)
+print(entropy)
+entropy= 1/float(entropy)
+print("The entropy of gene {} is {} because {} genes connect to it".format(answer,entropy, counts.get(answer)))
 
+totalentropy = 0
+for x in counts:
+    entropy=counts[x]
+    totalentropy+=entropy
+print(totalentropy)
+totalentropy=1/float(totalentropy)
+print("The total entropy of the entire system is {}".format(totalentropy))
