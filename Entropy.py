@@ -14,7 +14,7 @@ def PrintNetwork(): #prints all the genes and what they connect to
         print("{} : {}".format(x, d[x]))  # prints key and all values attached to it
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintSet(): #print an individual key
@@ -24,7 +24,7 @@ def PrintSet(): #print an individual key
     print(d.get(key))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def DlenPrint(): #print length of the dictionary
@@ -32,7 +32,7 @@ def DlenPrint(): #print length of the dictionary
     print("There are {} nodes".format(len(d)))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintSystemsCounts(): #prints each node in system and how many connections each node has
@@ -41,7 +41,7 @@ def PrintSystemsCounts(): #prints each node in system and how many connections e
         print("Gene {} connects to {} genes".format(x, counts[x]))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintSetsCounts(): #method allows you to specify a node in question and see how many connections it has
@@ -51,7 +51,7 @@ def PrintSetsCounts(): #method allows you to specify a node in question and see 
     print(counts.get(key))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintGeneInformation(): #method prints what genes connect to a specific node and how many of them
@@ -62,7 +62,7 @@ def PrintGeneInformation(): #method prints what genes connect to a specific node
     print("{} has the following genes connect to it: {}".format(key, d.get(key)))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintIndividualEntropy():
@@ -74,7 +74,7 @@ def PrintIndividualEntropy():
     print("The entropy of gene {} is {} because {} genes connect to it".format(key, entropy, counts.get(key)))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press enter to return to menu")
+    input("press enter to return to menu")
     Menu()
 
 def PrintSystemEntropy():
@@ -88,7 +88,7 @@ def PrintSystemEntropy():
     print("The total entropy of the entire system is {}".format(totalentropy))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    raw_input("press any key to return to menu")
+    input("press any key to return to menu")
     Menu()
 
 def Menu():            #Main Menu with dictionary containing options( mimicing a switch case statement)
@@ -99,10 +99,11 @@ def Menu():            #Main Menu with dictionary containing options( mimicing a
         print(line)
     f.close() #closes file reader to conserve memory
     num = input()
+    num=int(num)
     if 0<=num<=8: #if user input is one of the options execute the method
         menu[num]()
     else:
-        raw_input("Please choose an option between 0 and 8\nPress enter to continue")
+        input("Please choose an option between 0 and 8\nPress enter to continue")
         Menu()
 
 
@@ -112,7 +113,7 @@ def main():
             (key, val) = line.split()  # split each lines so that its key then value
             d.setdefault(key, []).append(val)  # method that adds multiple vals to a key and throws the nodes and its connections to d dictionary
     for key, val, in d.items():  # for loop that puts each node and the amount of values it connects to into a dictionary called counts
-        NumOfItems = len(filter(bool, val))
+        NumOfItems = len(d[key])
         counts[key] = NumOfItems
     Menu() #method for main menu
 
