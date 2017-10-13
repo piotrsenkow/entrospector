@@ -8,20 +8,20 @@ counts = {}
 def Quit():    #Kill program >:)
     sys.exit()
 
-def PrintNetwork(): #prints all the genes and what they connect to
+def PrintNetwork(): #prints all the genes and their connections
     start_time = time.time()
-    for x in d:  # for each value in dictionary
+    for x in d:  # iterates through whole dictionary
         print("{} : {}".format(x, d[x]))  # prints key and all values attached to it
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
     input("press enter to return to menu")
     Menu()
 
-def PrintSet(): #print an individual key
+def PrintSet(): #print an individual key and its connections
     key = input("Which gene would you like to see all of its connections to?\n")
     start_time = time.time()
     key = str(key)
-    print(d.get(key))
+    print(d.get(key)) #prints the value of the key that user specifies
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
     input("press enter to return to menu")
@@ -37,7 +37,7 @@ def DlenPrint(): #print length of the dictionary
 
 def PrintSystemsCounts(): #prints each node in system and how many connections each node has
     start_time = time.time()
-    for x in counts:  # for loop that prints out the gene and how many genes it connects to, iterating through the "counts" dictionary
+    for x in counts:  # iterates through "counts" dictionary and displays the nodes their number of connections
         print("Gene {} connects to {} genes".format(x, counts[x]))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
@@ -77,7 +77,7 @@ def PrintIndividualEntropy():
     input("press enter to return to menu")
     Menu()
 
-def PrintSystemEntropy():
+def PrintSystemEntropy(): #prints out the systems total entropy
     totalentropy = 0  # total entropy counter set to 0
     start_time = time.time()
     for x in counts:  # for loop that accesses count values of each value in counts dictionary and adds them to totalentropy
@@ -88,32 +88,41 @@ def PrintSystemEntropy():
     print("The total entropy of the entire system is {}".format(totalentropy))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
-    input("press any key to return to menu")
+    input("press enter to return to menu")
     Menu()
 
-def Menu():            #Main Menu with dictionary containing options( mimicing a switch case statement)
-    menu = {1: PrintNetwork, 2: PrintSet, 3: DlenPrint, 4: PrintSystemsCounts, 5: PrintSetsCounts,
+def Menu(): #Main Menu with dictionary containing options( mimicing a switch case statement)
+    menu = {1: PrintNetwork, 2: PrintSet, 3: DlenPrint, 4: PrintSystemsCounts, 5: PrintSetsCounts,         #Dictionary of menu options
             6: PrintGeneInformation, 7: PrintIndividualEntropy, 8: PrintSystemEntropy, 0: Quit}
+
     f=open("options.txt") #don't want to put menu options into memory so reading from a file
     for line in f: #prints menu
         print(line)
     f.close() #closes file reader to conserve memory
-    num = input()
-    num=int(num)
-    if 0<=num<=8: #if user input is one of the options execute the method
-        menu[num]()
-    else:
-        input("Please choose an option between 0 and 8\nPress enter to continue")
+    num = input() #gets users menu option choice
+
+    try:
+        num = int(num) #try to see if the user put in an integer value
+    except ValueError: #if it isn't tell the user to put a number in and return to menu
+        print("That's not a number! Returning to menu")
+        input("press enter to return to menu")
         Menu()
 
+    else: #otherwise proceed with the menu
+        if 0<=num<=8: #if user input is one of the options execute one of the programs methods
+            menu[num]()
+        else: #if the user chooses a number that isn't an option in the menu
+            print("Choose one of the menu options. Returning to menu.")
+            input("press enter to return to menu")
+            Menu()
 
 def main():
     with open("Yeast.txt") as f:  # while the text is open
         for line in f:  # iterate through each line
             (key, val) = line.split()  # split each lines so that its key then value
             d.setdefault(key, []).append(val)  # method that adds multiple vals to a key and throws the nodes and its connections to d dictionary
-    for key, val, in d.items():  # for loop that puts each node and the amount of values it connects to into a dictionary called counts
-        NumOfItems = len(d[key])
+    for key, val, in d.items():   #Loop takes each key in d (gene node) and counts amount of items to each key. Places the node in dictionary "counts" as a key
+        NumOfItems = len(d[key])  #and then the number corresonding to how many connections in d as the value in dictionary "counts"
         counts[key] = NumOfItems
     Menu() #method for main menu
 
