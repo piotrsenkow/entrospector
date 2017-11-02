@@ -12,7 +12,8 @@ import time
 
 d = {}                                 #Data structures
 counts = {}
-copy={}
+duplicatecounts={}
+duplication_dictionary={}
 
 def Quit():    #Kill program >:)
     sys.exit()
@@ -77,7 +78,7 @@ def PrintGeneInformation(): #method prints what genes connect to a specific node
 def PrintIndividualEntropy():
     key=input("Which gene's entropy would you like to know?\n")
     start_time = time.time()
-    key = str(key)
+    key = int(key)
     entropy = counts.get(key)  # calculates entropy value of that gene
     entropy = 1 / float(entropy)  # float type necessary unless you want python to tell you 0 entropy calculated
     if entropy == 1: #a gene that connects to only one other gene has no entropy, theres no uncertainty that node will connect to other node
@@ -104,33 +105,58 @@ def PrintSystemEntropy(): #prints out the systems total entropy
     input("press enter to return to menu")
     Menu()
 
-def duplication():
+def PrintDuplicatedSystemEntropy(): #prints out the systems total entropy
+    totalentropy = 0  # total entropy counter set to 0
     start_time = time.time()
-    for key,val in d.items(): #iterate through d; original dictionary ---CREATE NEGATIVE KEY VALUES AND THROW THEM INTO COPY DICTIONARY
-        key = int(key) #convert keys to ints so I can create (duplicate) negative keys
-
-        copy[key]=val #put the values into copy dictionary for the same keys
-        copy[key] = [x for x in copy[key]] #instantiate all contents in list corresponding to each dictionary key to a postitive node
-        key = -key #change key to a negative key
-        copy[key]=val #add those negative keys to dictionary
-
-    for key, val in copy.items(): #iterate through copy dictionary, creates a temp list, throws values of each list into temp list, turns them negative, extend original list with the temp list holding negative values (duplication)
-        templist=[]
-        for x in copy[key]: #for each item in list to a particular key
-            templist.append(-x) #append the negative value to temp list
-        copy[key].extend(templist) #then extend the list in the dictionary with the corresponding negative values in the temp list
-        del templist[:] #delete temp list to avoid memory leak with the next iteration
-    for x in copy:  # iterates through whole dictionary
-        print("{} : {}".format(x,copy[x]))  # prints key and all values attached to it
-
+    for x in duplicatecounts:  # for loop that accesses count values of each value in counts dictionary and adds them to totalentropy
+        entropy = duplicatecounts[x]
+        if entropy==1: #if theres only one connection, no entropy
+            entropy=0
+        totalentropy += entropy
+    print("1/{}".format(totalentropy))  # test to see what denominator is
+    totalentropy = 1 / float(totalentropy)  # total entropy calculation
+    print("The total entropy of the entire system is {}".format(totalentropy))
     elapsed_time = time.time() - start_time
     print("{} seconds to complete task".format(elapsed_time))
     input("press enter to return to menu")
     Menu()
 
+def duplication():
+    if bool(duplication_dictionary) == True:
+        print("Can't duplicate an already duplicated system! Returning to menu.")
+        Menu()
+    else:
+        start_time = time.time()
+        for key,val in d.items(): #iterate through d; original dictionary ---CREATE NEGATIVE KEY VALUES AND THROW THEM INTO COPY DICTIONARY
+            key = int(key) #convert keys to ints so I can create (duplicate) negative keys
+
+            duplication_dictionary[key]=val #put the values into copy dictionary for the same keys
+            duplication_dictionary[key] = [x for x in duplication_dictionary[key]] #instantiate all contents in list corresponding to each dictionary key to a postitive node
+            key = -key #change key to a negative key
+            duplication_dictionary[key]=val #add those negative keys to dictionary
+
+        for key, val in duplication_dictionary.items(): #iterate through copy dictionary, creates a temp list, throws values of each list into temp list, turns them negative, extend original list with the temp list holding negative values (duplication)
+            templist=[]
+            for x in duplication_dictionary[key]: #for each item in list to a particular key
+                templist.append(-x) #append the negative value to temp list
+            duplication_dictionary[key].extend(templist) #then extend the list in the dictionary with the corresponding negative values in the temp list
+            del templist[:] #delete temp list to avoid memory leak with the next iteration
+
+        for key, val, in duplication_dictionary.items():  # Loop takes each key in d (gene node) and counts amount of items to each key. Places the node in dictionary "counts" as a key
+            NumOfItems = len(duplication_dictionary[key])  # and then the number corresonding to how many connections in d as the value in dictionary "counts"
+            duplicatecounts[key] = NumOfItems
+
+        for x in duplication_dictionary:  # iterates through whole dictionary
+            print("{} : {}".format(x, duplication_dictionary[x]))  # prints key and all values attached to it
+
+        elapsed_time = time.time() - start_time
+        print("{} seconds to complete task".format(elapsed_time))
+        input("press enter to return to menu")
+        Menu()
+
 def Menu(): #Main Menu with dictionary containing options( mimicing a switch case statement)
     menu = {1: PrintNetwork, 2: PrintSet, 3: DlenPrint, 4: PrintSystemsCounts, 5: PrintSetsCounts,         #Dictionary of menu options
-            6: PrintGeneInformation, 7: PrintIndividualEntropy, 8: PrintSystemEntropy, 9: duplication, 0: Quit}
+            6: PrintGeneInformation, 7: PrintIndividualEntropy, 8: PrintSystemEntropy, 9: duplication, 10: PrintDuplicatedSystemEntropy, 0: Quit}
 
     f=open("options.txt") #don't want to put menu options into memory so reading from a file
     for line in f: #prints menu
@@ -146,7 +172,7 @@ def Menu(): #Main Menu with dictionary containing options( mimicing a switch cas
         Menu()
 
     else: #otherwise proceed with the menu
-        if 0<=num<=9: #if user input is one of the options execute one of the programs methods
+        if 0<=num<=10: #if user input is one of the options execute one of the programs methods
             menu[num]()
         else: #if the user chooses a number that isn't an option in the menu
             print("Choose one of the menu options. Returning to menu.")
